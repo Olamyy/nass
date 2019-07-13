@@ -19,15 +19,16 @@ class KerasTextClassifier(object):
             embeddings_path=None,
             optimizer='adam',
             batch_size=32,
+            batch=False,
             epochs=10,
             vocab=None,
             vocab_size=None,
-            class_count=None,
             **kwargs):
 
+        self.batch = batch
         self.vocab_size = vocab_size
         self.vocab = vocab
-        self.class_count = class_count
+        self.class_count = 8
         self.embedding_dim = embedding_dim
         self.max_seq_len = max_seq_len
         self.embeddings_path = embeddings_path
@@ -94,6 +95,19 @@ class KerasTextClassifier(object):
         model = Model(sequence_input, predictions)
         return model
 
+    def batch_generator(self, X, y, batch_size=16):
+        '''
+        Return a random image from X, y
+        '''
+
+        while True:
+            # choose batch_size random images / labels from the data
+            idx = np.random.randint(0, X.shape[0], batch_size)
+            im = X[idx]
+            label = y[idx]
+            npr = np.concatenate(im)
+            yield npr, label
+
     def fit(self, X, y, validation_data=None):
         self.validate_params()
         model = self.build_model()
@@ -103,20 +117,31 @@ class KerasTextClassifier(object):
 
         padded_X = pad_sequences(X, self.max_seq_len)
         one_hot_y = to_categorical(y, num_classes=self.class_count)
-
         if validation_data is not None:
             v_X, v_y = validation_data
             v_X = pad_sequences(v_X, self.max_seq_len)
             v_y = to_categorical(v_y, self.class_count)
-
             early_stopping = EarlyStopping(
                 monitor='val_loss', patience=self.patience)
-            self.history = model.fit(
-                padded_X, one_hot_y,
-                batch_size=self.batch_size,
-                epochs=self.epochs,
-                validation_data=[v_X, v_y],
-                callbacks=[early_stopping])
+
+            if self.batch:
+                train_gen = self.batch_generator(padded_X, one_hot_y, batch_size=self.batch_size)
+                valid_gen = self.batch_generator(v_X, v_y, batch_size=self.batch_size)
+
+                self.history = model.fit_generator(
+                    generator=train_gen,
+                    epochs=self.epochs,
+                    validation_data=valid_gen,
+                    steps_per_epoch=padded_X.shape[0] // self.batch_size,
+                    validation_steps=v_X.shape[0] // self.batch_size,
+                    callbacks=[early_stopping])
+            else:
+                self.history = model.fit(
+                    padded_X, one_hot_y,
+                    batch_size=self.batch_size,
+                    epochs=self.epochs,
+                    validation_data=[v_X, v_y],
+                    callbacks=[early_stopping])
         else:
             self.history = model.fit(
                 padded_X,

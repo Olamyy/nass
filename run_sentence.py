@@ -14,9 +14,6 @@ from benchmarks import benchmark
 epoch = 50
 
 models = [
-    (MLP, {'layers': 1, 'units': 360, 'epochs': 50, 'max_vocab_size': 50000}, "MLP 1x360"),
-    (MLP, {'layers': 2, 'units': 180, 'epochs': 50, 'max_vocab_size': 50000}, "MLP 2x180"),
-    (MLP, {'layers': 3, 'epochs': epoch}, "MLP 3x512"),
     (LSTMClassifier, {
         'max_seq_len': 1000,
         'layers': 3,

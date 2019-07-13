@@ -1,6 +1,5 @@
 from keras.layers import Dense, Flatten, Dropout, GlobalMaxPooling1D
 from keras.layers import Conv1D, MaxPooling1D
-
 from keras_models.text_classifier import KerasTextClassifier
 
 
@@ -11,7 +10,6 @@ class FCholletCNN(KerasTextClassifier):
 
     def __init__(
             self,
-            max_seq_len=1000,
             embedding_dim=30,
             embeddings_path=None,
             optimizer='adam',
@@ -20,18 +18,15 @@ class FCholletCNN(KerasTextClassifier):
             units=128,
             dropout_rate=0.25,
             vocab_size=None,
-            vocab=None,
-            class_count=None):
+            vocab=None):
         super(FCholletCNN, self).__init__(
-            max_seq_len,
-            embedding_dim,
-            embeddings_path,
-            optimizer,
-            batch_size,
-            epochs,
-            vocab,
-            vocab_size,
-            class_count)
+            embedding_dim=embedding_dim,
+            embeddings_path=embeddings_path,
+            optimizer=optimizer,
+            batch_size=batch_size,
+            epochs=epochs,
+            vocab=vocab,
+            vocab_size=vocab_size)
 
         self.units = units
         self.dropout_rate = dropout_rate
@@ -39,20 +34,20 @@ class FCholletCNN(KerasTextClassifier):
         self.params['dropout_rate'] = dropout_rate
 
     def transform_embedded_sequences(self, embedded_sequences):
-        x = Conv1D(self.units, 5, activation='relu')(embedded_sequences)
+        x = Conv1D(self.units, 5, activation='relu', name='c1')(embedded_sequences)
         x = MaxPooling1D(5)(x)
         if self.dropout_rate > 0:
             x = Dropout(self.dropout_rate)(x)
-        x = Conv1D(self.units, 5, activation='relu')(x)
+        x = Conv1D(self.units, 5, activation='relu', name='c2')(x)
         x = MaxPooling1D(5)(x)
         if self.dropout_rate > 0:
             x = Dropout(self.dropout_rate)(x)
-        x = Conv1D(self.units, 5, activation='relu')(x)
+        x = Conv1D(self.units, 5, activation='relu', name='c3', data_format='channels_first')(x)
         x = MaxPooling1D(35)(x)
         if self.dropout_rate > 0:
             x = Dropout(self.dropout_rate)(x)
         x = GlobalMaxPooling1D()(x)
-        x = Flatten()(x)
+        # x = Flatten()(x)
         x = Dense(self.units, activation='relu')(x)
         preds = Dense(self.class_count, activation='softmax')(x)
         return preds

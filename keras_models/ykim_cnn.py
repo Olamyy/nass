@@ -25,6 +25,7 @@ class YKimCNN(KerasTextClassifier):
             num_filters=10,
             vocab_size=None,
             vocab=None,
+            batch=True,
             class_count=None):
         super(YKimCNN, self).__init__(
             max_seq_len,
@@ -34,6 +35,7 @@ class YKimCNN(KerasTextClassifier):
             batch_size,
             epochs,
             vocab,
+            batch,
             vocab_size,
             class_count)
 

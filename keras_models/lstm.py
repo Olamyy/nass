@@ -20,7 +20,8 @@ class LSTMClassifier(KerasTextClassifier):
             rec_dropout_rate=0.2,
             vocab=None,
             vocab_size=None,
-            class_count=None
+            class_count=None,
+            batch=True
     ):
         super(LSTMClassifier, self).__init__(
             max_seq_len,
@@ -31,7 +32,8 @@ class LSTMClassifier(KerasTextClassifier):
             epochs,
             vocab,
             vocab_size,
-            class_count)
+            class_count,
+            batch)
 
         self.params['layers'] = layers
         self.params['units'] = units

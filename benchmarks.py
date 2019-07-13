@@ -1,10 +1,8 @@
-from collections import Counter
-
 import numpy
 import numpy as np
-from time import time
 
 import pandas
+from keras.preprocessing.text import Tokenizer
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split, ShuffleSplit, cross_validate
 from joblib import Memory
@@ -22,10 +20,11 @@ def prepare_data():
     labels = data.bill_class
     label_encoder = LabelEncoder()
     labels = label_encoder.fit_transform(labels)
-    word_counts = Counter(w for text in text for w in text)
+    tok = Tokenizer(num_words=30000)
+    tok.fit_on_texts(text)
+    word_counts = tok.word_counts
     vocab = [''] + [w for (w, _) in sorted(word_counts.items(), key=star(lambda _, c: -c))]
-    word2ind = {w: i for i, w in enumerate(vocab)}
-    X = np.array([[word2ind[w] for w in tokens] for tokens in text])
+    X = tok.texts_to_matrix(text)
     return X, labels, vocab, label_encoder
 
 
@@ -54,18 +53,17 @@ def benchmark(model_class, model_params=None, name=None):
     if model_params is None:
         model_params = {}
 
+    print(model_params)
     X, y, vocab, label_encoder = prepare_data()
-    class_count = len(label_encoder.classes_)
     model_params['vocab_size'] = len(vocab)
     model_params['vocab'] = vocab
-    model_params['class_count'] = class_count
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     model = model_class(**model_params)
     preds = model.fit(X_train, y_train).predict(X_test)
     score = f1_score(preds, y_test, average='macro')
     run_validation(model, X_train, y_train)
-    numpy.savez_compressed('test_and_pred_{name}.npz', test=X_test, predictions=preds)
+    numpy.savez_compressed('test_and_pred_{0}.npz'.format(name), test=X_test, predictions=preds)
     return score
 
 

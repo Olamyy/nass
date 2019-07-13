@@ -4,6 +4,8 @@ from keras.layers import Dense, Dropout, Activation
 from keras.preprocessing.text import Tokenizer
 from keras.callbacks import EarlyStopping
 
+from keras_models.utils import f1
+
 
 class MLP(object):
 
@@ -64,7 +66,7 @@ class MLP(object):
 
         model.compile(loss='categorical_crossentropy',
                       optimizer='adam',
-                      metrics=['accuracy'])
+                      metrics=['accuracy', f1])
 
         if validation_data is not None:
             v_X, v_y = validation_data

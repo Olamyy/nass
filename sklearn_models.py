@@ -1,7 +1,8 @@
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, TfidfTransformer
 from sklearn.naive_bayes import BernoulliNB, MultinomialNB
 from sklearn.pipeline import Pipeline
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 
 
 def prep(x):
@@ -19,10 +20,11 @@ class SklearnClassifierWrapper(object):
         vectorizer = vectorizer_class(
             preprocessor=lambda x: prep(x),
             tokenizer=lambda x: x,
+            min_df=0.2,
             ngram_range=(1, ngram_n))
 
         self.params = {'tfidf': tfidf, 'ngram_n': ngram_n}
-        self.clf = Pipeline([('vectorizer', vectorizer), ('model', model)])
+        self.clf = Pipeline([('vectorizer', vectorizer), ('tfidf', TfidfTransformer(use_idf=True)), ('model', model)])
         self.name = "SklearnClassifierWrapper(tfidf=%s)" % tfidf
 
     def fit(self, X, y):
@@ -58,5 +60,20 @@ class SVM(SklearnClassifierWrapper):
     def __init__(self, tfidf=False, ngram_n=1, kernel='linear', probability=False, **kwargs):
         super(SVM, self).__init__(SVC(kernel=kernel, probability=probability), tfidf, ngram_n)
         self.name = "SVC(tfidf=%s, ngram_n=%s, kernel=%s)" % (tfidf, ngram_n, kernel)
+        self.params['C'] = 10,
+        self.params['gamma'] = 0.001,
         self.params['kernel'] = kernel
         self.params['probability'] = probability
+
+
+class LinearSVM(SklearnClassifierWrapper):
+    def __init__(self, tfidf=False, ngram_n=1, kernel='linear', probability=False, **kwargs):
+        super(LinearSVM, self).__init__(LinearSVC(C=10), tfidf, ngram_n)
+        self.name = "SVC(tfidf=%s, ngram_n=%s, kernel=%s)" % (tfidf, ngram_n, kernel)
+        self.params['probability'] = probability
+
+
+class RandomForest(SklearnClassifierWrapper):
+    def __init__(self, tfidf=False, ngram_n=1, **kwargs):
+        super(RandomForest, self).__init__(RandomForestClassifier(), tfidf, ngram_n)
+        self.name = "SVC(tfidf=%s, ngram_n=%s,)" % (tfidf, ngram_n)
