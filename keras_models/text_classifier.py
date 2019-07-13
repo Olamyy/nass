@@ -6,7 +6,7 @@ from keras.layers import Embedding
 from keras.models import Model
 from keras.callbacks import EarlyStopping
 
-from keras_models.utils import get_embedding_dim, get_embedding_matrix
+from keras_models.utils import get_embedding_dim, get_embedding_matrix, f1
 
 
 class KerasTextClassifier(object):
