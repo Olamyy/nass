@@ -1,4 +1,4 @@
-from keras.layers import Dense, Flatten, Dropout
+from keras.layers import Dense, Flatten, Dropout, GlobalMaxPooling1D
 from keras.layers import Conv1D, MaxPooling1D
 
 from keras_models.text_classifier import KerasTextClassifier
@@ -51,6 +51,7 @@ class FCholletCNN(KerasTextClassifier):
         x = MaxPooling1D(35)(x)
         if self.dropout_rate > 0:
             x = Dropout(self.dropout_rate)(x)
+        x = GlobalMaxPooling1D()(x)
         x = Flatten()(x)
         x = Dense(self.units, activation='relu')(x)
         preds = Dense(self.class_count, activation='softmax')(x)
