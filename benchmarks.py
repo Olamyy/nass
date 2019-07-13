@@ -15,7 +15,7 @@ def star(f):
 
 
 def prepare_data():
-    data = pandas.read_csv('/Users/Olamilekan/Desktop/Machine Learning/OpenSource/nass-ai/data/clean_data.csv')
+    data = pandas.read_csv('/home/lekan/nass/clean_data.csv')
     text = data.clean_text
     labels = data.bill_class
     label_encoder = LabelEncoder()
