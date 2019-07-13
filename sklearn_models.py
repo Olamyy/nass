@@ -4,6 +4,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 
 
+def prep(x):
+    return list(map(str, x))
+
+
 class SklearnClassifierWrapper(object):
     def __init__(self, model, tfidf=False, ngram_n=1):
         """
@@ -13,7 +17,7 @@ class SklearnClassifierWrapper(object):
         """
         vectorizer_class = TfidfVectorizer if tfidf else CountVectorizer
         vectorizer = vectorizer_class(
-                preprocessor=lambda x: map(str, x),
+                preprocessor=lambda x: prep(x),
                 tokenizer=lambda x: x,
                 ngram_range=(1, ngram_n))
 

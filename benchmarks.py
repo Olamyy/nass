@@ -4,7 +4,7 @@ import numpy as np
 from time import time
 
 import pandas
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from joblib import Memory
 from sklearn.preprocessing import LabelEncoder
@@ -58,7 +58,7 @@ def benchmark(model_class, model_params=None, iters=1):
         start = time()
         preds = model.fit(X_train, y_train).predict(X_test)
         end = time()
-        scores.append(accuracy_score(preds, y_test))
+        scores.append(f1_score(preds, y_test, average='macro'))
         times.append(end - start)
     return scores, times
 
