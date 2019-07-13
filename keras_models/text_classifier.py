@@ -99,7 +99,7 @@ class KerasTextClassifier(object):
         model = self.build_model()
         model.compile(loss='categorical_crossentropy',
                       optimizer=self.optimizer,
-                      metrics=['acc'])
+                      metrics=['acc', f1])
 
         padded_X = pad_sequences(X, self.max_seq_len)
         one_hot_y = to_categorical(y, num_classes=self.class_count)
