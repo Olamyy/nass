@@ -18,7 +18,7 @@ class FCholletCNN(KerasTextClassifier):
             batch_size=32,
             epochs=10,
             units=128,
-            dropout_rate=0,
+            dropout_rate=0.25,
             vocab_size=None,
             vocab=None,
             class_count=None):

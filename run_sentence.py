@@ -14,13 +14,12 @@ from benchmarks import benchmark
 epoch = 50
 
 models = [
-    (MLP, {'layers': 1, 'units': 360, 'dropout_rate': 0.87, 'epochs': 12, 'max_vocab_size': 22000}, "MLP 1x360"),
-    (MLP, {'layers': 2, 'units': 180, 'dropout_rate': 0.6, 'epochs': 5, 'max_vocab_size': 22000}, "MLP 2x180"),
-    (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': epoch}, "MLP 3x512"),
+    (MLP, {'layers': 1, 'units': 360, 'epochs': 12, 'max_vocab_size': 22000}, "MLP 1x360"),
+    (MLP, {'layers': 2, 'units': 180, 'epochs': 5, 'max_vocab_size': 22000}, "MLP 2x180"),
+    (MLP, {'layers': 3, 'epochs': epoch}, "MLP 3x512"),
     (LSTMClassifier, {
         'max_seq_len': 50,
         'layers': 3,
-        'dropout_rate': 0.45,
         'rec_dropout_rate': 0.35,
         'optimizer': 'adam',
         'embedding_dim': 24,
@@ -31,7 +30,6 @@ models = [
     (LSTMClassifier, {
         'max_seq_len': 50,
         'layers': 2,
-        'dropout_rate': 0.45,
         'rec_dropout_rate': 0.4,
         'optimizer': 'rmsprop',
         'embedding_dim': 12,
@@ -42,7 +40,6 @@ models = [
     (LSTMClassifier, {
         'max_seq_len': 50,
         'layers': 2,
-        'dropout_rate': 0.25,
         'rec_dropout_rate': 0.5,
         'optimizer': 'rmsprop',
         'embeddings_path': '/home/lekan/nass/glove/glove.6B.300d.txt',
@@ -53,7 +50,6 @@ models = [
     (LSTMClassifier, {
         'max_seq_len': 50,
         'layers': 2,
-        'dropout_rate': 0.25,
         'rec_dropout_rate': 0.5,
         'optimizer': 'rmsprop',
         'embeddings_path': '/home/lekan/nass/glove/glove.6B.300d.txt',
@@ -66,7 +62,7 @@ models = [
         'filter_sizes': (3, 5, 7),
         'num_filters': 5,
         'embedding_dim': 45,
-        'dropout_rates': (0.64, 0.47),
+        'dropout_rates': (0.25, 0.47),
         'units': epoch,
         'epochs': 53,
         'batch_size': 128
@@ -83,7 +79,6 @@ models = [
     }, "CNN GloVe"),
     (BLSTM2DCNN, {
         'max_seq_len': 50,
-        'dropout_rate': 0.4,
         'rec_dropout_rate': 0.88,
         'optimizer': 'rmsprop',
         'embeddings_path': '/home/lekan/nass/glove/glove.6B.300d.txt',
@@ -94,7 +89,6 @@ models = [
     }, "BLSTM2DCNN GloVe"),
     (BLSTM2DCNN, {
         'max_seq_len': 50,
-        'dropout_rate': 0.4,
         'rec_dropout_rate': 0.75,
         'optimizer': 'adam',
         'embedding_dim': 15,

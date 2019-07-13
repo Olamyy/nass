@@ -16,7 +16,7 @@ class LSTMClassifier(KerasTextClassifier):
             epochs=10,
             layers=1,
             units=128,
-            dropout_rate=0.2,
+            dropout_rate=0.25,
             rec_dropout_rate=0.2,
             vocab=None,
             vocab_size=None,

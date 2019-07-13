@@ -20,7 +20,7 @@ class YKimCNN(KerasTextClassifier):
             batch_size=32,
             epochs=10,
             units=64,
-            dropout_rates=(0.5, 0.8),
+            dropout_rates=(0.25, 0.5),
             filter_sizes=(3, 8),
             num_filters=10,
             vocab_size=None,
