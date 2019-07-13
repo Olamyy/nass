@@ -39,11 +39,11 @@ models = [
     (BernNB, {'tfidf': True}, "BNB tfidf"),
     (MultNB, {'tfidf': False}, "MNB"),
     (MultNB, {'tfidf': False, 'ngram_n': 2}, "MNB 2-gr"),
-    # (BernNB, {'tfidf': False}, "BNB"),
-    # (SVM, {'tfidf': True, 'kernel': 'linear'}, "SVM tfidf"),
-    # (SVM, {'tfidf': True, 'kernel': 'linear', 'ngram_n': 2}, "SVM tfidf 2-gr"),
-    # (SVM, {'tfidf': False, 'kernel': 'linear'}, "SVM"),
-    # (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2}, "SVM 2-gr")
+    (BernNB, {'tfidf': False}, "BNB"),
+    (SVM, {'tfidf': True, 'kernel': 'linear'}, "SVM tfidf"),
+    (SVM, {'tfidf': True, 'kernel': 'linear', 'ngram_n': 2}, "SVM tfidf 2-gr"),
+    (SVM, {'tfidf': False, 'kernel': 'linear'}, "SVM"),
+    (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2}, "SVM 2-gr")
 ]
 
 
@@ -52,7 +52,7 @@ results_path = 'document_results.csv'
 if __name__ == '__main__':
     records = []
     for model_class, params, model_name in models:
-            scores, times = benchmark(model_class, params, 1)
+            scores, times = benchmark(model_class, params, 10)
             model_str = str(model_class(**params))
             print('Score %.3f' % np.mean(scores), model_str)
             print()
