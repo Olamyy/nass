@@ -17,11 +17,11 @@ class SklearnClassifierWrapper(object):
         """
         vectorizer_class = TfidfVectorizer if tfidf else CountVectorizer
         vectorizer = vectorizer_class(
-                preprocessor=lambda x: prep(x),
-                tokenizer=lambda x: x,
-                ngram_range=(1, ngram_n))
+            preprocessor=lambda x: prep(x),
+            tokenizer=lambda x: x,
+            ngram_range=(1, ngram_n))
 
-        self.params = {'tfidf':tfidf, 'ngram_n': ngram_n}
+        self.params = {'tfidf': tfidf, 'ngram_n': ngram_n}
         self.clf = Pipeline([('vectorizer', vectorizer), ('model', model)])
         self.name = "SklearnClassifierWrapper(tfidf=%s)" % tfidf
 
