@@ -14,11 +14,11 @@ from benchmarks import benchmark
 epoch = 50
 
 models = [
-    (MLP, {'layers': 1, 'units': 360, 'epochs': 12, 'max_vocab_size': 22000}, "MLP 1x360"),
-    (MLP, {'layers': 2, 'units': 180, 'epochs': 5, 'max_vocab_size': 22000}, "MLP 2x180"),
+    (MLP, {'layers': 1, 'units': 360, 'epochs': 50, 'max_vocab_size': 50000}, "MLP 1x360"),
+    (MLP, {'layers': 2, 'units': 180, 'epochs': 50, 'max_vocab_size': 50000}, "MLP 2x180"),
     (MLP, {'layers': 3, 'epochs': epoch}, "MLP 3x512"),
     (LSTMClassifier, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'layers': 3,
         'rec_dropout_rate': 0.35,
         'optimizer': 'adam',
@@ -28,7 +28,7 @@ models = [
         'units': 250
     }, "LSTM 24D"),
     (LSTMClassifier, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'layers': 2,
         'rec_dropout_rate': 0.4,
         'optimizer': 'rmsprop',
@@ -38,7 +38,7 @@ models = [
         'units': 80
     }, "LSTM 12D"),
     (LSTMClassifier, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'layers': 2,
         'rec_dropout_rate': 0.5,
         'optimizer': 'rmsprop',
@@ -48,7 +48,7 @@ models = [
         'units': epoch
     }, "BLSTM GloVe"),
     (LSTMClassifier, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'layers': 2,
         'rec_dropout_rate': 0.5,
         'optimizer': 'rmsprop',
@@ -58,7 +58,7 @@ models = [
         'units': 32
     }, "LSTM GloVe"),
     (YKimCNN, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'filter_sizes': (3, 5, 7),
         'num_filters': 5,
         'embedding_dim': 45,
@@ -68,7 +68,7 @@ models = [
         'batch_size': 128
     }, "CNN 45D"),
     (YKimCNN, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'filter_sizes': (3, 5),
         'num_filters': 75,
         'embeddings_path': '/home/lekan/nass/glove/glove.6B.300d.txt',
@@ -78,7 +78,7 @@ models = [
         'batch_size': 128
     }, "CNN GloVe"),
     (BLSTM2DCNN, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'rec_dropout_rate': 0.88,
         'optimizer': 'rmsprop',
         'embeddings_path': '/home/lekan/nass/glove/glove.6B.300d.txt',
@@ -88,7 +88,7 @@ models = [
         'batch_size': 64
     }, "BLSTM2DCNN GloVe"),
     (BLSTM2DCNN, {
-        'max_seq_len': 50,
+        'max_seq_len': 1000,
         'rec_dropout_rate': 0.75,
         'optimizer': 'adam',
         'embedding_dim': 15,
@@ -114,7 +114,7 @@ logreg_stacker = (StackingTextClassifier, {
         (m, params)
         for m, params, _ in models[:-3]
     ] + [
-        (m, dict(params.items() + [('probability', True)]))
+        (m, dict(list(params.items()) + [('probability', True)]))
         for m, params, _ in models[-3:]
     ],
     'use_proba': True,
