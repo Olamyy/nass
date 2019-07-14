@@ -54,7 +54,23 @@ def f1(y_true, y_pred):
         predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
         precision = true_positives / (predicted_positives + K.epsilon())
         return precision
+
     precision = precision(y_true, y_pred)
     recall = recall(y_true, y_pred)
-    return 2*((precision*recall)/(precision+recall+K.epsilon()))
+    return 2 * ((precision * recall) / (precision + recall + K.epsilon()))
 
+
+class MeanEmbeddingVectorizer(object):
+    def __init__(self, word2vec, dim):
+        self.word2vec = word2vec
+        self.dim = dim
+
+    def fit(self, X, y):
+        return self
+
+    def transform(self, X):
+        return np.array([
+            np.mean([self.word2vec[w] for w in words if w in self.word2vec]
+                    or [np.zeros(self.dim)], axis=0)
+            for words in X
+        ])

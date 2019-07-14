@@ -25,6 +25,7 @@ class SklearnClassifierWrapper(object):
 
         self.params = {'tfidf': tfidf, 'ngram_n': ngram_n}
         self.clf = Pipeline([('vectorizer', vectorizer), ('tfidf', TfidfTransformer(use_idf=True)), ('model', model)])
+        print(self.clf.steps)
         self.name = "SklearnClassifierWrapper(tfidf=%s)" % tfidf
 
     def fit(self, X, y):
@@ -58,19 +59,14 @@ class BernNB(SklearnClassifierWrapper):
 
 class SVM(SklearnClassifierWrapper):
     def __init__(self, tfidf=False, ngram_n=1, kernel='linear', probability=False, **kwargs):
-        super(SVM, self).__init__(SVC(kernel=kernel, probability=probability), tfidf, ngram_n)
+        super(SVM, self).__init__(SVC(kernel=kernel, C=10, gamma=0.0001, probability=probability), tfidf, ngram_n)
         self.name = "SVC(tfidf=%s, ngram_n=%s, kernel=%s)" % (tfidf, ngram_n, kernel)
-        self.params['C'] = 10,
-        self.params['gamma'] = 0.001,
-        self.params['kernel'] = kernel
-        self.params['probability'] = probability
 
 
 class LinearSVM(SklearnClassifierWrapper):
-    def __init__(self, tfidf=False, ngram_n=1, kernel='linear', probability=False, **kwargs):
+    def __init__(self, tfidf=False, ngram_n=1, kernel='linear', **kwargs):
         super(LinearSVM, self).__init__(LinearSVC(C=10), tfidf, ngram_n)
         self.name = "SVC(tfidf=%s, ngram_n=%s, kernel=%s)" % (tfidf, ngram_n, kernel)
-        self.params['probability'] = probability
 
 
 class RandomForest(SklearnClassifierWrapper):

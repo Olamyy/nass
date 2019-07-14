@@ -24,8 +24,7 @@ def prepare_data():
     tok.fit_on_texts(text)
     word_counts = tok.word_counts
     vocab = [''] + [w for (w, _) in sorted(word_counts.items(), key=star(lambda _, c: -c))]
-    X = tok.texts_to_matrix(text)
-    return X, labels, vocab, label_encoder
+    return text, labels, vocab
 
 
 cache = Memory('cache').cache
@@ -44,9 +43,8 @@ def benchmark(model_class, model_params=None, name=None):
     """
 
     def run_validation(clf, train, y_train):
-        scoring = {'f1_micro': 'f1_macro'}
         cv = ShuffleSplit(n_splits=5, test_size=0.2, random_state=42)
-        accuracies = cross_validate(clf, train, y_train, scoring=scoring, cv=cv)
+        accuracies = cross_validate(clf, train, y_train, scoring='f1_macro', cv=cv)
         print(accuracies)
         return True
 
@@ -54,11 +52,11 @@ def benchmark(model_class, model_params=None, name=None):
         model_params = {}
 
     print(model_params)
-    X, y, vocab, label_encoder = prepare_data()
+    text, labels, vocab = prepare_data()
     model_params['vocab_size'] = len(vocab)
     model_params['vocab'] = vocab
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(text, labels, test_size=0.2, random_state=42)
     model = model_class(**model_params)
     preds = model.fit(X_train, y_train).predict(X_test)
     score = f1_score(preds, y_test, average='macro')
@@ -80,11 +78,9 @@ def benchmark_with_early_stopping(model_class, model_params=None):
     if model_params is None:
         model_params = {}
 
-    X, y, vocab, label_encoder = prepare_data()
-    class_count = len(label_encoder.classes_)
+    X, y, vocab = prepare_data()
     model_params['vocab_size'] = len(vocab)
     model_params['vocab'] = vocab
-    model_params['class_count'] = class_count
     model = model_class(**model_params)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)

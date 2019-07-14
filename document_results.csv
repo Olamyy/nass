@@ -1,0 +1,2 @@
+f1,model,model_name
+0.18345865153535054,"SVC(tfidf=True, ngram_n=1, kernel=linear)",SVM tfidf
